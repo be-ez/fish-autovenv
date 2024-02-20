@@ -49,15 +49,19 @@ function applyAutoenv
     set _dir (string match -n "$VIRTUAL_ENV*" "$_source")
     # If we're no longer inside the venv dirctory deactivate it and return.
     if test -z "$_dir" -a ! -e "$_source"
-      deactivate
-      if test "$autovenv_announce" = "yes"
-        echo "Deactivated Virtual Enviroment ($__autovenv_new)"
-        set -e __autovenv_new
-        set -e __autovenv_old
+      if type -q deactivate
+        deactivate
+        if test "$autovenv_announce" = "yes"
+          echo "Deactivated Virtual Environment ($__autovenv_new)"
+          set -e __autovenv_new
+          set -e __autovenv_old
+        end
       end
       # If we've switched into a different venv directory, deactivate the old and activate the new.
     else if test -z "$_dir" -a -e "$_source"
-      deactivate
+      if type -q deactivate
+        deactivate
+      end
       source "$_source"
       if test "$autovenv_announce" = "yes"
         echo "Switched Virtual Environments ($__autovenv_old => $__autovenv_new)"
